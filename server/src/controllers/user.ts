@@ -1,5 +1,6 @@
 import { Response } from "express";
-import { User } from "../models/models";
+import { User, Class } from "../models/models"
+import type { UserType } from "../types/zod";
 import { AuthRequest } from "../middleware/auth";
 
 const profile = async (req: AuthRequest, res: Response) => {
@@ -14,7 +15,7 @@ const profile = async (req: AuthRequest, res: Response) => {
         }
         return res.status(200).json({
             "success": true,
-            "data": user,
+            "data": user as UserType,
         });
     } catch (err) {
         return res.status(500).json({
@@ -25,4 +26,28 @@ const profile = async (req: AuthRequest, res: Response) => {
 
 };
 
-export { profile };
+const CreateClass = async (req: AuthRequest, res: Response) => {
+    try {
+        const {clsName, id } = req.body;
+
+        const Cls = await Class.create({
+            className : clsName,
+            teacherId : id,
+            studentIds : []
+        })
+
+        console.log("Class created", Cls)
+
+
+        res.status(201).json({
+            "success": true,
+            "message": "Class Created"
+        })
+    }
+    catch(err){
+        console.error("Error creating class", err)
+    }
+    }
+
+
+export { profile, CreateClass };

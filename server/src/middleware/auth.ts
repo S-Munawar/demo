@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import { verifyToken } from "@/utils/jwt";
 dotenv.config();
 
 export interface AuthRequest extends Request {
@@ -21,10 +22,8 @@ const isRequired = (req: AuthRequest, res: Response, next: NextFunction) => {
         })
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET!;
-
     try{
-        const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
         req.user = {
             id: decoded.userId,
             role: decoded.role
@@ -41,4 +40,26 @@ const isRequired = (req: AuthRequest, res: Response, next: NextFunction) => {
     
 }
 
-export {isRequired};
+const TeacherOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
+    const {role} = req.user!;
+    if (role !== 'teacher'){
+        return res.status(401).json({
+            "success": false,
+            "message": "Only Teachers"  
+        })
+    }
+    next()
+}
+
+const StudentOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
+    const {role} = req.body;
+    if (role !== 'Student'){
+        return res.status(401).json({
+            "success": false,
+            "message": "Only Teachers"  
+        })
+    }
+    next()
+}
+
+export {isRequired, TeacherOnly, StudentOnly};

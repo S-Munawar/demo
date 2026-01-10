@@ -42,15 +42,16 @@ const Register = async (req: Request, res: Response) => {
         role: user.role,
     }) 
 
-    res.cookie('token', jwtToken, {
+    return res
+    .cookie('token', jwtToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'development' ? false : true,
+        secure: false,
         sameSite: 'strict',
         maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
-    return res.status(200).json({
+    })
+    .status(201).json({
         "success": true,
+        "message": "Registered"
     })
 
     }
@@ -64,11 +65,8 @@ const Register = async (req: Request, res: Response) => {
 
 const Login = async (req: Request, res: Response) => {
 
+    try{
     const { email, password } = req.body;
-    const method = req.method;
-    const path  = req.path;
-    console.log(path);
-    console.log(method);
     console.log('Login endpoint')
 
     if (!email || !password){
@@ -96,22 +94,50 @@ const Login = async (req: Request, res: Response) => {
         })
     }
 
-    const token = CreateToken ({
+    const jwtToken = CreateToken ({
         userId: user._id,
         role: user.role,
     })
 
-    res.cookie('token', token, {
+    return res
+    .cookie('token', jwtToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'development' ? false : true,
-        sameSite: 'strict',
+        secure: false,
+        sameSite: 'strict', // 
         maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
-    return res.status(200).send('OK').json({
-        "success": true,
     })
-
+    .status(200).json({
+        "success": true,
+        "message": "Logged In"
+    })
+    }
+    catch(err){
+        return res.status(500).json({
+            "success": false,
+            "error": "Internal server error",
+        })
+    }
 }
 
-export {Register, Login};
+const Logout = async (_: Request, res: Response) => {
+    try{
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'development' ? false : true,
+            sameSite: 'strict',
+        });
+        return res.status(200).json({
+            "success": true,
+            "message": "Logged out successfully"
+        })
+
+    }
+    catch (err){
+        return res.status(500).json({
+            "success": false,
+            "error": "Internal server error",
+        })
+    }
+}
+
+export {Register, Login, Logout};

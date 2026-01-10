@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Register } from '../api/api';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 const SignUp = () => {
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [role, setRole] = React.useState('student');
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const SignUp = () => {
         if (!res?.success) {
           throw new Error(res?.error || 'SignUp Error');
         }
-        <Navigate to="/Home" />;
+        navigate('/SignIn');
       } catch (err) {
         console.error('Error during registration:', err);
       }

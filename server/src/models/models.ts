@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minLength: 6,
     },
     role: {
         type: String,
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema({
 const User =  mongoose.model("User", userSchema);
 
 const classSchema = new mongoose.Schema({
+    className: {
+        type: String,
+        required: true
+    },
     teacherId: {
         type: ObjectId,
         ref: "User",

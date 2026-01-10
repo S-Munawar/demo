@@ -38,6 +38,9 @@ importers:
       jwks-rsa:
         specifier: ^3.1.0
         version: 3.2.0
+      mongodb:
+        specifier: ^7.0.0
+        version: 7.0.0
       morgan:
         specifier: ~1.10.0
         version: 1.10.1

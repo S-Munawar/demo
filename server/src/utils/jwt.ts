@@ -10,8 +10,8 @@ interface jwt {
 const CreateToken = ({userId, role}: jwt) => {
     const token = jwt.sign(
         {
-            userId,
-            role
+            userId: userId,
+            role: role
         },
         process.env.JWT_SECRET as string,
         {

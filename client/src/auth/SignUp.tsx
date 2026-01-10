@@ -1,24 +1,46 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
+import { Register } from '../api/api';
+import { Navigate } from 'react-router-dom';
 const SignUp = () => {
-  const navigate = useNavigate();
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [role, setRole] = React.useState('student');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/Home');
+    const doSignUp = async () => {
+      try {
+        console.log('SignUp called');
+        const res = await Register(name, email, password, role);
+        if (!res?.success) {
+          throw new Error(res?.error || 'SignUp Error');
+        }
+        <Navigate to="/Home" />;
+      } catch (err) {
+        console.error('Error during registration:', err);
+      }
+    };
+    doSignUp();
   };
 
   return (
     <>
     <div>SignUp</div>
     <form 
-    onSubmit={handleSubmit}
+    onSubmit={(e) => handleSubmit(e)}
     >
-      <input type="text" placeholder="Username" />
-      <input type="password" placeholder="Password" />
+      <input onChange={(e) => setName(e.target.value)} type="text" placeholder="Name" />
+      <input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" />
+      <input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
+      <select onChange={(e) => setRole(e.target.value)} defaultValue="student">
+        <option value="teacher">Teacher</option>
+        <option value="student">Student</option>
+      </select>
       <button type="submit">Sign Up</button>
     </form>
+    <Link to="/signin">Sign In</Link>
     </>
   );
 };

@@ -1,24 +1,39 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { Login } from '../api/api';
 const SignIn = () => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/Home');
+    const doSignIn = async () => {
+      try {
+        console.log('SignIn called');
+        const res = await Login(email, password);
+        if (!res?.success) {
+          throw new Error(res?.error || 'SignIn Error');
+        }
+        navigate('/Home');
+      } catch (err) {
+        console.error('Error during login:', err);
+      }
+    };
+    doSignIn();
   };
 
   return (
     <>
     <div>SignIn</div>
     <form 
-    onSubmit={handleSubmit}
+    onSubmit={(e) => handleSubmit(e)}
     >
-      <input type="text" placeholder="Username" />
-      <input type="password" placeholder="Password" />
+      <input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" />
+      <input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
       <button type="submit">Sign In</button>
     </form>
+    <Link to="/signup">Sign Up</Link>
     </>
   );
 };

@@ -6,7 +6,15 @@ import { CreateToken } from "../utils/jwt";
 
 const Register = async (req: Request, res: Response) => {
 
-    const { email, password, role } = req.body;
+    const {name, email, password, role} = req.body;
+    console.log('Register endpoint')
+
+    if (!name || !email || !password || !role){
+        return res.status(400).json({
+            "success": false,
+            "message": "Invalid Credentials"
+        })
+    }
 
     const userExist = await User.findOne({email});
 
@@ -21,20 +29,30 @@ const Register = async (req: Request, res: Response) => {
 
     try{
         const user = await User.create({
+            name,
             email,
             password: hashedPassword,
             role
         })
+        console.log("user", user)
+        
 
-        const token = CreateToken({
+        const jwtToken = CreateToken({
         userId: user._id,
         role: user.role,
     }) 
 
-    return res.status(201).json({
+    res.cookie('token', jwtToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'development' ? false : true,
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    return res.status(200).json({
         "success": true,
-        "token": token,
     })
+
     }
     catch (err){
         return res.status(500).json({
@@ -47,6 +65,18 @@ const Register = async (req: Request, res: Response) => {
 const Login = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
+    const method = req.method;
+    const path  = req.path;
+    console.log(path);
+    console.log(method);
+    console.log('Login endpoint')
+
+    if (!email || !password){
+        return res.status(400).json({
+            "success": false,
+            "message": "Invalid Credentials"
+        })
+    }
 
     const user = await User.findOne({email});
 
@@ -71,9 +101,15 @@ const Login = async (req: Request, res: Response) => {
         role: user.role,
     })
 
-    return res.status(200).json({
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'development' ? false : true,
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    return res.status(200).send('OK').json({
         "success": true,
-        token
     })
 
 }

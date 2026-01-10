@@ -1,15 +1,20 @@
-import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
+import { Response } from "express";
 import { User } from "../models/models";
-import { CreateToken } from "../utils/jwt";
+import { AuthRequest } from "../middleware/auth";
 
-
-const teacherController = async (req: Request, res: Response) => {
+const profile = async (req: AuthRequest, res: Response) => {
     try {
-        const teachers = await User.find({ role: "teacher" }).select("-password");
+        const userId = req.user?.id;
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            return res.status(404).json({
+                "success": false,
+                "error": "User not found",
+            });
+        }
         return res.status(200).json({
             "success": true,
-            "message": "Teachers fetched successfully",
+            "data": user,
         });
     } catch (err) {
         return res.status(500).json({
@@ -17,21 +22,7 @@ const teacherController = async (req: Request, res: Response) => {
             "error": "Internal server error",
         });
     }
+
 };
 
-const studentController = async (req: Request, res: Response) => {
-    try {
-        const users = await User.find({ role: "student" }).select("-password");
-        return res.status(200).json({
-            "success": true,
-            "message": "Students fetched successfully",
-        });
-    } catch (err) {
-        return res.status(500).json({
-            "success": false,
-            "error": "Internal server error",
-        });
-    }
-};
-
-export { teacherController, studentController };
+export { profile };

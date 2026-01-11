@@ -76,14 +76,13 @@ const GetProfile = async () => {
 
 const CreateCls = async (clsName: String) => {
   try{
-    const name = clsName;
     const res = await fetch(`${API_URL}/createClass`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },
       credentials: 'include',
-      body: JSON.stringify({name})
+      body: JSON.stringify({clsName})
     })
     const data = res.json()
     return data;

@@ -42,6 +42,7 @@ const isRequired = (req: AuthRequest, res: Response, next: NextFunction) => {
 
 const TeacherOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
     const {role} = req.user!;
+    console.log('TeacherOnly Middleware endpoint')
     if (role !== 'teacher'){
         return res.status(401).json({
             "success": false,

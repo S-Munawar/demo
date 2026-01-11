@@ -28,12 +28,13 @@ const profile = async (req: AuthRequest, res: Response) => {
 
 const CreateClass = async (req: AuthRequest, res: Response) => {
     try {
-        const {clsName, id } = req.body;
+        const {clsName} = req.body;
+        const {id} = req.user!;
+        console.log('CreateClass endpoint')
 
         const Cls = await Class.create({
             className : clsName,
-            teacherId : id,
-            studentIds : []
+            teacherId : id
         })
 
         console.log("Class created", Cls)

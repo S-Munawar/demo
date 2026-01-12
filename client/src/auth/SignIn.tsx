@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Login } from '../api/api';
+import { Login, setToken } from '../api/api';
 const SignIn = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -14,6 +14,9 @@ const SignIn = () => {
         const res = await Login(email, password);
         if (!res?.success) {
           throw new Error(res?.error || 'SignIn Error');
+        }
+        if (res.token) {
+          setToken(res.token);
         }
         navigate('/Home');
       } catch (err) {

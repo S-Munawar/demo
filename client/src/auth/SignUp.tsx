@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Register } from '../api/api';
+import { Register, setToken } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
@@ -18,6 +18,9 @@ const SignUp = () => {
         const res = await Register(name, email, password, role);
         if (!res?.success) {
           throw new Error(res?.error || 'SignUp Error');
+        }
+        if (res.token) {
+          setToken(res.token);
         }
         navigate('/SignIn');
       } catch (err) {

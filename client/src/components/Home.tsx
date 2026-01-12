@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetProfile, Logout } from '../api/api'
+import { GetProfile, Logout, connectWebSocket } from '../api/api'
 import {useNavigate} from 'react-router-dom';
 import StudentDash from './StudentDash';
 import TeacherDash from './TeacherDash';
@@ -37,6 +37,8 @@ const Home = () => {
     };
     fetchUser();
   }, [])
+
+  connectWebSocket();
   
   return (
   <div>

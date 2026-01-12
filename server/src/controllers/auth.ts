@@ -46,12 +46,13 @@ const Register = async (req: Request, res: Response) => {
     .cookie('token', jwtToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'strict',
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 1 day
     })
     .status(201).json({
         "success": true,
-        "message": "Registered"
+        "message": "Registered",
+        "token": jwtToken
     })
 
     }
@@ -103,12 +104,13 @@ const Login = async (req: Request, res: Response) => {
     .cookie('token', jwtToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'strict', // 
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 1 day
     })
     .status(200).json({
         "success": true,
-        "message": "Logged In"
+        "message": "Logged In",
+        "token": jwtToken
     })
     }
     catch(err){

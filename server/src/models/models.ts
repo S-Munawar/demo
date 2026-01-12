@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
         required: true
     }
 })
-const User =  mongoose.model("User", userSchema);
 
 const classSchema = new mongoose.Schema({
     className: {
@@ -41,7 +40,6 @@ const classSchema = new mongoose.Schema({
     },
     ]
 })
-const Class = mongoose.model("Class", classSchema);
 
 const attendanceSchema = new mongoose.Schema({
     classId: {
@@ -58,12 +56,16 @@ const attendanceSchema = new mongoose.Schema({
         type: String,
         enum: ["present", "absent"],
         required: true,
+        default: "absent",
     },
     date: {
         type: Date,
         default: Date.now,
     }
 })
+
+const User =  mongoose.model("User", userSchema);
+const Class = mongoose.model("Class", classSchema);
 const Attendance = mongoose.model("Attendance", attendanceSchema)
 
 export { User, Class, Attendance }

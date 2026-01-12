@@ -53,11 +53,12 @@ const TeacherOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
 }
 
 const StudentOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
-    const {role} = req.body;
-    if (role !== 'Student'){
+    const {role} = req.user!;
+    console.log('StudentOnly Middleware endpoint')
+    if (role !== 'student'){
         return res.status(401).json({
             "success": false,
-            "message": "Only Teachers"  
+            "message": "Only Students"  
         })
     }
     next()
